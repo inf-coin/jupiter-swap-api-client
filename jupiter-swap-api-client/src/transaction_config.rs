@@ -144,18 +144,20 @@ pub struct TransactionConfig {
     /// Allow optimized WSOL token account by using transfer, assign with seed, allocate with seed then initialize account 3 instead of the expensive associated token account process
     pub allow_optimized_wrapped_sol_token_account: bool,
     /// Fee token account for the output token, it is derived using the seeds = ["referral_ata", referral_account, mint] and the `REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3` referral contract (only pass in if you set a feeBps and make sure that the feeAccount has been created)
-    #[serde(with = "option_field_as_string")]
+    #[serde(with = "option_field_as_string", skip_serializing_if = "Option::is_none")]
     pub fee_account: Option<Pubkey>,
     /// Public key of the token account that will be used to receive the token out of the swap. If not provided, the user's ATA will be used. If provided, we assume that the token account is already initialized.
-    #[serde(with = "option_field_as_string")]
+    #[serde(with = "option_field_as_string", skip_serializing_if = "Option::is_none")]
     pub destination_token_account: Option<Pubkey>,
     /// Add a readonly, non signer tracking account that isn't used by jupiter
-    #[serde(with = "option_field_as_string")]
+    #[serde(with = "option_field_as_string", skip_serializing_if = "Option::is_none")]
     pub tracking_account: Option<Pubkey>,
     /// compute unit price to prioritize the transaction, the additional fee will be compute unit consumed * computeUnitPriceMicroLamports
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub compute_unit_price_micro_lamports: Option<ComputeUnitPriceMicroLamports>,
     /// Prioritization fee lamports paid for the transaction in addition to the signatures fee.
     /// Mutually exclusive with `compute_unit_price_micro_lamports`.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub prioritization_fee_lamports: Option<PrioritizationFeeLamports>,
     /// When enabled, it will do a swap simulation to get the compute unit used and set it in ComputeBudget's compute unit limit.
     /// This will increase latency slightly since there will be one extra RPC call to simulate this. Default is false.
@@ -179,10 +181,13 @@ pub struct TransactionConfig {
     pub skip_user_accounts_rpc_calls: bool,
     /// Providing keyed ui accounts allow loading AMMs that are not in the market cache
     /// If a keyed ui account is the AMM state, it has to be provided with its params according to the market cache format
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub keyed_ui_accounts: Option<Vec<KeyedUiAccount>>,
     /// The program authority ID
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub program_authority_id: Option<u8>,
     /// Dynamic slippage
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dynamic_slippage: Option<DynamicSlippageSettings>,
 }
 
